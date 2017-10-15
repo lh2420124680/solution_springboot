@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlb.ecp.login.mapper.SyMapper">
+
+	<update id="updateUser">
+		UPDATE S_USER_BASIC_INFO SET REL_NAME = '陈志英' WHERE gid = '1FB58345A0A5FF7CE0536603E00A7613'
+	</update>
+	
+	<select id="queryMsg" resultType="java.util.Map">
+		SELECT GID,LOGIN_MAIL,REL_NAME FROM S_USER_BASIC_INFO WHERE gid = '1FB58345A0A5FF7CE0536603E00A7613'
+	</select>
+
+</mapper>

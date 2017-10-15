@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.zlb.ecp</groupId>
+    <artifactId>solution_cloud</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>com.zlb.ecp.ptmanager.biz</artifactId>
+  
+  <dependencies>
+    <dependency>
+			<groupId>com.zlb.ecp</groupId>
+			<artifactId>com.zlb.ecp.pojo</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.zlb.ecp</groupId>
+			<artifactId>com.zlb.ecp.ptmanager.ibiz</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.zlb.ecp</groupId>
+			<artifactId>com.zlb.ecp.ptmanager.dao</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.zlb.ecp</groupId>
+			<artifactId>com.zlb.ecp.common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+  </dependencies>
+  
+</project>

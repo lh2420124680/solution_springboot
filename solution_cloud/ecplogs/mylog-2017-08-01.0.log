@@ -1,0 +1,66 @@
+[ WARN ] [2017-08-01 16:32:48] org.mybatis.spring.mapper.ClassPathMapperScanner [166] - No MyBatis mapper was found in '[com.zlb.ecp.test]' package. Please check your configuration.
+[ WARN ] [2017-08-01 16:32:51] com.atomikos.jdbc.AbstractDataSourceBean [12] - AtomikosDataSoureBean 'xaDs': poolSize equals default - this may cause performance problems!
+[ WARN ] [2017-08-01 16:32:52] com.atomikos.jdbc.AbstractDataSourceBean [12] - AtomikosDataSoureBean 'xaDs2': poolSize equals default - this may cause performance problems!
+[ WARN ] [2017-08-01 16:32:53] com.atomikos.icatch.config.UserTransactionServiceImp [12] - No properties path set - looking for transactions.properties in classpath...
+[ WARN ] [2017-08-01 16:32:53] com.atomikos.icatch.config.UserTransactionServiceImp [12] - transactions.properties not found - looking for jta.properties in classpath...
+[ WARN ] [2017-08-01 16:32:53] com.atomikos.icatch.config.UserTransactionServiceImp [12] - Using init file: /F:/soultion/solution_cloud/com.zlb.ecp.common/target/classes/jta.properties
+[ ERROR] [2017-08-01 16:32:54] org.springframework.boot.SpringApplication [815] - Application startup failed
+org.springframework.jmx.export.UnableToRegisterMBeanException: Unable to register MBean [baseDataSource] with key 'baseDataSource'; nested exception is javax.management.RuntimeMBeanException: RuntimeException thrown in preRegister method
+	at org.springframework.jmx.export.MBeanExporter.registerBeanNameOrInstance(MBeanExporter.java:628)
+	at org.springframework.jmx.export.MBeanExporter.registerBeans(MBeanExporter.java:550)
+	at org.springframework.jmx.export.MBeanExporter.afterSingletonsInstantiated(MBeanExporter.java:432)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:781)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.refresh(EmbeddedWebApplicationContext.java:122)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:737)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:370)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:314)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1162)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1151)
+	at com.zlb.ecp.test.AppStart.main(AppStart.java:19)
+Caused by: javax.management.RuntimeMBeanException: RuntimeException thrown in preRegister method
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.throwMBeanRegistrationException(Unknown Source)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.preRegister(Unknown Source)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerDynamicMBean(Unknown Source)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerObject(Unknown Source)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.registerMBean(Unknown Source)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.registerMBean(Unknown Source)
+	at org.springframework.jmx.support.MBeanRegistrationSupport.doRegister(MBeanRegistrationSupport.java:195)
+	at org.springframework.jmx.export.MBeanExporter.registerLazyInit(MBeanExporter.java:714)
+	at org.springframework.jmx.export.MBeanExporter.registerBeanNameOrInstance(MBeanExporter.java:597)
+	... 12 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'baseDataSource' defined in class path resource [com-zlb-database-multi.xml]: Invocation of init method failed; nested exception is java.lang.NullPointerException
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1628)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.aop.target.LazyInitTargetSource.getTarget(LazyInitTargetSource.java:68)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicUnadvisedInterceptor.intercept(CglibAopProxy.java:453)
+	at com.alibaba.druid.pool.xa.DruidXADataSource$$EnhancerBySpringCGLIB$$495e7e84.preRegister(<generated>)
+	at com.sun.jmx.mbeanserver.MBeanSupport.preRegister(Unknown Source)
+	... 20 common frames omitted
+Caused by: java.lang.NullPointerException: null
+	at com.alibaba.druid.util.JdbcUtils.getDriverClassName(JdbcUtils.java:360)
+	at com.alibaba.druid.pool.DruidDataSource.init(DruidDataSource.java:591)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeCustomInitMethod(AbstractAutowireCapableBeanFactory.java:1758)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1695)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1624)
+	... 30 common frames omitted
+[ WARN ] [2017-08-01 16:32:54] org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext [1005] - Exception thrown from LifecycleProcessor on context close
+java.lang.IllegalStateException: LifecycleProcessor not initialized - call 'refresh' before invoking lifecycle methods via the context: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@13d9cbf5: startup date [Tue Aug 01 16:32:47 CST 2017]; root of context hierarchy
+	at org.springframework.context.support.AbstractApplicationContext.getLifecycleProcessor(AbstractApplicationContext.java:417)
+	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1002)
+	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:961)
+	at org.springframework.boot.SpringApplication.handleRunFailure(SpringApplication.java:794)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:325)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1162)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1151)
+	at com.zlb.ecp.test.AppStart.main(AppStart.java:19)

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+	default-lazy-init="true">
+
+	<!-- 支持oracle数据库的clob字段处理 -->
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true" />
+
+	<!-- druid父数据源 -->
+	<bean id="baseDataSource" class="com.alibaba.druid.pool.xa.DruidXADataSource"
+		init-method="init" destroy-method="close">
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${druid.initialSize}" />
+		<property name="minIdle" value="${druid.minIdle}" />
+		<property name="maxActive" value="${druid.maxActive}" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${druid.maxWait}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+
+		<property name="testWhileIdle" value="${druid.testWhileIdle}" />
+		<property name="testOnBorrow" value="${druid.testOnBorrow}" />
+		<property name="testOnReturn" value="${druid.testOnReturn}" />
+
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。 -->
+		<property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+
+		<!-- 配置监控统计拦截的filters -->
+		<!-- <property name="proxyFilters">
+			<list>
+				<ref bean="log-filter" />
+			</list>
+		</property> -->
+		<property name="filters" value="${druid.filters}" />
+	</bean>
+	
+	<!-- <bean id="log-filter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
+		<property name="statementExecutableSqlLogEnable" value="true" />
+	</bean> -->
+
+	<!-- druid数据源 -->
+	<bean id="dataSourceDruid" parent="baseDataSource">
+		<property name="name" value="${jdbc.name}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<!-- xa数据源 -->
+	<bean id="xaDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+		init-method="init" destroy-method="close">
+		<property name="uniqueResourceName" value="xaDs" />
+		<property name="xaDataSource" ref="dataSourceDruid" />
+		<!-- NOTE: 注意不要添加以下注释的参数 -->
+		<!--property name="poolSize" value="10" / -->
+		<!-- <property name="minPoolSize" value="10" /> -->
+		<property name="maxPoolSize" value="100" />
+		<property name="borrowConnectionTimeout" value="3000" />
+		<!--property name="testQuery" value="select 1 from dual" / -->
+		<property name="maintenanceInterval" value="100" />
+	</bean>
+
+	<!-- druid数据源2 -->
+	<bean id="dataSourceDruid2" parent="baseDataSource">
+		<property name="name" value="${jdbc2.name}" />
+		<property name="url" value="${jdbc2.url}" />
+		<property name="username" value="${jdbc2.username}" />
+		<property name="password" value="${jdbc2.password}" />
+	</bean>
+
+	<!-- xa数据源2 -->
+	<bean id="xaDataSource2" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+		init-method="init" destroy-method="close">
+		<property name="uniqueResourceName" value="xaDs2" />
+		<property name="xaDataSource" ref="dataSourceDruid2" />
+		<!-- NOTE: 注意不要添加以下注释的参数 -->
+		<!--property name="poolSize" value="10" / -->
+		<!-- <property name="minPoolSize" value="10" /> -->
+		<property name="maxPoolSize" value="100" />
+		<property name="borrowConnectionTimeout" value="3000" />
+		<!--property name="testQuery" value="select 1 from dual" / -->
+		<property name="maintenanceInterval" value="100" />
+	</bean>
+
+	<!-- 动态数据源 -->
+	<bean id="dataSource" class="com.zlb.ecp.conf.DynamicDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry value-ref="xaDataSource" key="default_writeDBKey"></entry>
+				<!-- <entry value-ref="xaDataSource2" key="b_writeDBKey"></entry> -->
+				<entry value-ref="xaDataSource2" key="b_readDBKey0"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="xaDataSource"></property>
+	</bean>
+
+	<!-- 分布式事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManager">
+			<bean class="com.atomikos.icatch.jta.UserTransactionManager"
+				init-method="init" destroy-method="close">
+				<property name="forceShutdown" value="true" />
+			</bean>
+		</property>
+		<property name="userTransaction">
+			<bean class="com.atomikos.icatch.jta.UserTransactionImp" />
+		</property>
+		<property name="allowCustomIsolationLevels" value="true" />
+	</bean>
+
+	<!-- 配置事务通知属性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+
+			<tx:method name="put*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="use*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="count*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="list*" read-only="true" />
+
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置sqlsessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 配置扫描包，加载mapper代理对象 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.zlb.ecp.login.mapper"></property>
+	</bean>
+
+	<!-- 事务管理器驱动 -->
+	<context:annotation-config />
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+</beans>

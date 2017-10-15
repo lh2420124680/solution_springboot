@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlb.ecp.ptmanager.dao.IPtMgCtrlDao">
+
+	<insert id="addPtMg" parameterType="java.util.Map">
+		INSERT INTO PT_MANAGER
+		(GID,
+		SERVER_IP, FROM_URL,
+		PARAM)
+		VALUES
+		(SYS_GUID(), #{SERVER_IP},
+		#{FROM_URL}, #{PARAM})
+	</insert>
+
+	<update id="updatePtMg" parameterType="java.util.Map">
+		UPDATE PT_MANAGER T SET
+		T.LAST_UPDATE_TIME = SYSDATE
+		WHERE T.SERVER_IP = #{SERVER_IP}
+	</update>
+
+	<update id="updateOauth" parameterType="java.util.Map">
+		UPDATE PT_MANAGER T
+		SET
+		T.IS_OAUTH = #{IS_OAUTH},
+		T.OAUTH_CODE = #{OAUTH_CODE},
+		T.LAST_UPDATE_TIME = SYSDATE
+		WHERE T.SERVER_IP = #{SERVER_IP}
+	</update>
+
+	<update id="updateIsWarn" parameterType="java.util.Map">
+		UPDATE PT_MANAGER T
+		SET
+		T.IS_WARN = #{IS_WARN},
+		T.LAST_UPDATE_TIME = SYSDATE
+		WHERE T.SERVER_IP = #{SERVER_IP}
+	</update>
+
+	<select id="queryPtMgByIp" resultType="java.util.Map"
+		parameterType="java.util.Map">
+		SELECT T.Gid
+		FROM
+		PT_MANAGER T
+		WHERE T.SERVER_IP =
+		#{SERVER_IP}
+	</select>
+
+	<select id="queryPtMg" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT T.GID,
+		T.SERVER_IP,
+		T.FROM_URL,
+		T.PARAM,
+		T.IS_OAUTH,
+		T.OAUTH_CODE,
+		T.IS_WARN,
+		T.MAC,
+		TO_CHAR(T.CREATE_TIME,'YYYY-MM-dd HH24:MI:SS') AS
+		CREATE_TIME,
+		TO_CHAR(T.LAST_UPDATE_TIME,'YYYY-MM-dd HH24:MI:SS') AS
+		LAST_UPDATE_TIME
+		FROM PT_MANAGER T
+		WHERE 1 = 1
+		<if test="SERVERIP!=null and SERVERIP!=''">
+			AND T.SERVER_IP = #{SERVERIP}
+		</if>
+	</select>
+
+</mapper>
